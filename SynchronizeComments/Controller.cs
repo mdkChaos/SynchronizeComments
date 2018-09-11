@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 
 namespace SynchronizeComments
@@ -28,19 +29,19 @@ namespace SynchronizeComments
         {
             using (ModelDB db = new ModelDB())
             {
-                int count = 0;
-                foreach (Comment comment in comments)
+                IEnumerable<Comment> bdComments = GetCommentsFromBD();
+
+                IEnumerable<Comment> finds = bdComments.Except(comments, new MyEqualityComparer());
+                if (finds.Count() > 0 && finds != null)
                 {
-                    Comment find = db.Comments.Find(comment.Id);
-                    if (find == null)
+                    int count = 0;
+
+                    foreach (Comment find in finds)
                     {
-                        db.Comments.Add(comment);
+                        db.Comments.Add(find);
                         count++;
                     }
-                }
-                if (count > 0)
-                {
-                    db.SaveChanges();
+                    db.SaveChangesAsync();
                     Console.WriteLine($"Добавленно {count} новых записей");
                 }
                 else
@@ -48,6 +49,16 @@ namespace SynchronizeComments
                     Console.WriteLine("Новые записи отсутствуют");
                 }
             }
+        }
+
+        public List<Comment> GetCommentsFromBD()
+        {
+            List<Comment> comments;
+            using (ModelDB db = new ModelDB())
+            {
+                comments = db.Comments.ToList();
+            }
+            return comments;
         }
 
         public void ShowComments()

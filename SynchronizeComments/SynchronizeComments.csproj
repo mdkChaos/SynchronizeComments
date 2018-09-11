@@ -73,6 +73,7 @@
     <Compile Include="Comment.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="ModelDB.cs" />
+    <Compile Include="MyEqualityComparer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
