@@ -22,10 +22,11 @@ namespace SynchronizeComments
             Console.WriteLine("Press any key...");
             Console.ReadKey();
 
-            ctrl.ShowComments();
+            Logger.ShowComments(ctrl.GetCommentsFromBD());
 
             Console.WriteLine("Press any key...");
             Console.ReadKey();
+            
         }
     }
 }

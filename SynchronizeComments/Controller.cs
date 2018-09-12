@@ -12,16 +12,18 @@ namespace SynchronizeComments
     {
         public List<Comment> GetCommentsFromSite()
         {
-            WebRequest request = WebRequest.Create("https://jsonplaceholder.typicode.com/comments");
-            request.Credentials = CredentialCache.DefaultCredentials;
-            WebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(dataStream);
-            string responseFromServer = reader.ReadToEnd();
+            string siteUrl = Properties.Settings.Default.SiteUrl;
 
-            reader.Close();
-            dataStream.Close();
-            response.Close();
+            WebRequest request = WebRequest.Create(siteUrl);
+            request.Credentials = CredentialCache.DefaultCredentials;
+            string responseFromServer = null;
+
+            using (WebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                responseFromServer = reader.ReadToEnd();
+            }
 
             return JsonConvert.DeserializeObject<List<Comment>>(responseFromServer);
         }
@@ -60,23 +62,6 @@ namespace SynchronizeComments
                 comments = db.Comments.ToList();
             }
             return comments;
-        }
-
-        public void ShowComments()
-        {
-            using (ModelDB db = new ModelDB())
-            {
-                var comm = db.Comments;
-                foreach (Comment comment in comm)
-                {
-                    Console.WriteLine($"PostID: {comment.PostId}");
-                    Console.WriteLine($"ID: {comment.Id}");
-                    Console.WriteLine($"Name: {comment.Name}");
-                    Console.WriteLine($"E-Mail: {comment.Email}");
-                    Console.WriteLine($"Body: {comment.Body}");
-                    Console.WriteLine(new string('-', 20));
-                }
-            }
         }
     }
 }
