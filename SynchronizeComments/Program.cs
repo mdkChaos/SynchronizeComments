@@ -17,12 +17,14 @@ namespace SynchronizeComments
 
             List<Comment> comments = ctrl.GetCommentsFromSite();
 
-            ctrl.AddCommentsToDB(comments);
+            Task tsk = ctrl.AddCommentsToDBAsync(comments);
 
+            Console.WriteLine("Press any key...");
             Console.ReadKey();
 
             ctrl.ShowComments();
-            
+
+            Console.WriteLine("Press any key...");
             Console.ReadKey();
         }
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace SynchronizeComments
 {
@@ -25,7 +26,7 @@ namespace SynchronizeComments
             return JsonConvert.DeserializeObject<List<Comment>>(responseFromServer);
         }
 
-        public void AddCommentsToDB(List<Comment> comments)
+        public async Task AddCommentsToDBAsync(List<Comment> comments)
         {
             using (ModelDB db = new ModelDB())
             {
@@ -41,7 +42,7 @@ namespace SynchronizeComments
                         db.Comments.Add(find);
                         count++;
                     }
-                    db.SaveChangesAsync();
+                    await db.SaveChangesAsync();
                     Console.WriteLine($"Добавленно {count} новых записей");
                 }
                 else
